@@ -86,8 +86,21 @@
       <button>Trigger a Global Error</button>
     </section>
   </main>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({
+      token: "5087577bc0a54b8fb5daa53b9092f927"
+    });
+  </script>
+  <script>
+
+    
+    class ValidationError extends Error {
+      constructor(message) {
+        super(message);
+        this.name = 'ValidationError';
+      }
+    }
     let form = document.querySelector('form');
     form.addEventListener('submit', e => {
       e.preventDefault();
@@ -95,13 +108,126 @@
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
-      output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
+      try {
+        if (isNaN(parseFloat(firstNum))) {
+          throw new ValidationError('first is not valid');
+        }
+        if (isNaN(parseFloat(secondNum))) {
+          throw new ValidationError('second is not valid');
+        }
+
+        let result = eval(`${firstNum} ${operator} ${secondNum}`);
+        if (isNaN(result)) {
+          throw new Error('Result is not a number; it is NaN');
+        }
+        output.innerHTML = result;
+      } catch (error) {
+        if (error instanceof ValidationError){
+          output.innerHTML = error.name + ": "+ error.message;
+          throw error;
+        }
+        else{
+         output.innerHTML = 'Error: ' + error.message;
+        }
+        }
+        finally {
+        document.querySelector('#first-num').value = '';
+        document.querySelector('#second-num').value = '';
+        document.querySelector('#operator').selectedIndex = 0;
+      }
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
 
     // Start your code here
     // You may move this JS to another file if you wish
+
+    let logBtn = errorBtns[0];
+    logBtn.addEventListener('click', e =>{
+      console.log('Console Log Demo');
+    }) 
+
+    let consoleBtn = errorBtns[1];
+    consoleBtn.addEventListener('click', e =>{
+      console.error('Console Error Demo');
+    })     
+
+    let countBtn = errorBtns[2];
+    countBtn.addEventListener('click', e =>{
+      console.count('Console Count Demo');
+    })   
+
+    let warnBtn = errorBtns[3];
+    warnBtn.addEventListener('click', e =>{
+      console.warn('Console Warn Demo');
+    }) 
+      
+    let assertBtn = errorBtns[4];
+    assertBtn.addEventListener('click', e =>{
+      console.assert(3 % 2 === 0, "%o", 'Console Assert Demo: 3 is not even.');
+    })  
+      
+    let clearBtn = errorBtns[5];
+    clearBtn.addEventListener('click', e =>{
+      console.clear();
+    })  
+
+    let dirBtn = errorBtns[6];
+    dirBtn.addEventListener('click', e =>{
+      console.dir(dirBtn);
+    })  
+
+    let xmlBtn = errorBtns[7];
+    xmlBtn.addEventListener('click', e =>{
+      console.dirxml(xmlBtn);
+    })  
+
+    let startBtn = errorBtns[8];
+    startBtn.addEventListener('click', e =>{
+      console.group();
+    }) 
+
+    let endBtn = errorBtns[9];
+    endBtn.addEventListener('click', e =>{
+      console.groupEnd();
+    }) 
+
+    let tableBtn = errorBtns[10];
+    tableBtn.addEventListener('click', e =>{
+      console.table(["this", "is", "working"]);
+    }) 
+    
+    let startTBtn = errorBtns[11];
+    startTBtn.addEventListener('click', e =>{
+      console.time();
+    }) 
+
+    let endTBtn = errorBtns[12];
+    endTBtn.addEventListener('click', e =>{
+      console.timeEnd();
+    }) 
+
+
+    let traceBtn = errorBtns[13];
+    traceBtn.addEventListener('click', e =>{
+      function inside(){
+        console.trace();
+      }
+      inside()
+    }) 
+
+    let globalBtn = errorBtns[14];
+    globalBtn.addEventListener('click', e =>{
+      try {
+        if (1 === 1){
+          throw new Error('An error occurred');
+        }
+      }
+      catch (error) {
+        console.log('Error:', error.message);
+      }
+
+    }) 
   </script>
 </body>
 
