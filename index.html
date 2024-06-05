@@ -93,8 +93,10 @@
     });
   </script>
   <script>
-
-    
+    window.onerror = function(event, source, lineno, colno, error) {
+        console.log("Global Error:" + event);
+        console.log("Source: " + source);
+    }
     class ValidationError extends Error {
       constructor(message) {
         super(message);
@@ -124,7 +126,6 @@
       } catch (error) {
         if (error instanceof ValidationError){
           output.innerHTML = error.name + ": "+ error.message;
-          throw error;
         }
         else{
          output.innerHTML = 'Error: ' + error.message;
@@ -218,14 +219,8 @@
 
     let globalBtn = errorBtns[14];
     globalBtn.addEventListener('click', e =>{
-      try {
         if (1 === 1){
-          throw new Error('An error occurred');
-        }
-      }
-      catch (error) {
-        console.log('Error:', error.message);
-      }
+          throw new Error('An error occurred');}
 
     }) 
   </script>
